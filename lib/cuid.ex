@@ -50,7 +50,7 @@ defmodule Cuid do
   defp format_counter(num) do
     num
     |> Integer.to_string(@base)
-    |> String.rjust(@block_size, ?0)
+    |> String.pad_leading(@block_size, ?0)
   end
 
   @discrete_values 1_679_616
@@ -58,11 +58,11 @@ defmodule Cuid do
   defp timestamp do
     {mega, uni, micro} = :os.timestamp()
     rem((mega * 1_000_000 + uni) * 1_000_000 + micro, @discrete_values * @discrete_values)
-    |> Integer.to_string @base
+    |> Integer.to_string(@base)
   end
 
   defp random_block do
-    :random.uniform(@discrete_values - 1)
+    :rand.uniform(@discrete_values - 1)
     |> Integer.to_string(@base)
     |> String.rjust(@block_size, ?0)
   end
@@ -70,7 +70,7 @@ defmodule Cuid do
   @operator @base * @base
 
   defp get_fingerprint do
-    pid = rem(String.to_integer(System.get_pid), @operator) * @operator
+    pid = rem(String.to_integer(System.pid()), @operator) * @operator
 
     hostname = to_charlist(:net_adm.localhost())
     hostid = rem(Enum.sum(hostname) + Enum.count(hostname) + @base, @operator)
