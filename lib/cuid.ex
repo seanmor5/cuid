@@ -31,12 +31,12 @@ defmodule Cuid do
   ## Server callbacks
 
   def init(:ok) do
-    {:ok, %{:fingerprint => get_fingerprint, :count => 0}}
+    {:ok, %{:fingerprint => get_fingerprint(), :count => 0}}
   end
 
   def handle_call(:generate, _, %{:fingerprint => fingerprint, :count => count} = state) do
     cuid = Enum.join([
-      "c", timestamp, format_counter(count), fingerprint, random_block, random_block
+      "c", timestamp(), format_counter(count), fingerprint, random_block(), random_block()
     ]) |> String.downcase
 
     {:reply, cuid, %{state | :count => count + 1}}
@@ -56,7 +56,7 @@ defmodule Cuid do
   @discrete_values 1_679_616
 
   defp timestamp do
-    {mega, uni, micro} = :os.timestamp
+    {mega, uni, micro} = :os.timestamp()
     rem((mega * 1_000_000 + uni) * 1_000_000 + micro, @discrete_values * @discrete_values)
     |> Integer.to_string @base
   end
@@ -72,7 +72,7 @@ defmodule Cuid do
   defp get_fingerprint do
     pid = rem(String.to_integer(System.get_pid), @operator) * @operator
 
-    hostname = to_char_list :net_adm.localhost
+    hostname = to_charlist(:net_adm.localhost())
     hostid = rem(Enum.sum(hostname) + Enum.count(hostname) + @base, @operator)
 
     pid + hostid
