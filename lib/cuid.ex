@@ -64,7 +64,7 @@ defmodule Cuid do
   defp random_block do
     :rand.uniform(@discrete_values - 1)
     |> Integer.to_string(@base)
-    |> String.rjust(@block_size, ?0)
+    |> String.pad_leading(@block_size, ?0)
   end
 
   @operator @base * @base
