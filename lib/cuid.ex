@@ -50,7 +50,7 @@ defmodule Cuid do
   defp format_counter(num) do
     num
     |> Integer.to_string(@base)
-    |> String.pad_leading(@block_size, ?0)
+    |> String.pad_leading(@block_size, "0")
   end
 
   @discrete_values 1_679_616
@@ -64,7 +64,7 @@ defmodule Cuid do
   defp random_block do
     :rand.uniform(@discrete_values - 1)
     |> Integer.to_string(@base)
-    |> String.pad_leading(@block_size, ?0)
+    |> String.pad_leading(@block_size, "0")
   end
 
   @operator @base * @base
